@@ -8,9 +8,12 @@
   <body>
     <a-scene mindar-face embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-camera active="false" position="0 0 0"></a-camera>
-      <a-entity mindar-face-target="anchorIndex: 1">
-	<a-sphere color="green" radius="0.1"></a-sphere>
-      </a-entity>
+      <a-entity mindar-face-target="anchorIndex: 0"><a-sphere color="red"    radius="0.02"></a-sphere></a-entity>
+<a-entity mindar-face-target="anchorIndex: 1"><a-sphere color="green"  radius="0.02"></a-sphere></a-entity>
+<a-entity mindar-face-target="anchorIndex: 2"><a-sphere color="blue"   radius="0.02"></a-sphere></a-entity>
+<a-entity mindar-face-target="anchorIndex: 3"><a-sphere color="yellow" radius="0.02"></a-sphere></a-entity>
+<a-entity mindar-face-target="anchorIndex: 4"><a-sphere color="cyan"   radius="0.02"></a-sphere></a-entity>
+<a-entity mindar-face-target="anchorIndex: 5"><a-sphere color="magenta" radius="0.02"></a-sphere></a-entity>
     </a-scene>
   </body>
 </html>
