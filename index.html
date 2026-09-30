@@ -1,16 +1,36 @@
-
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
-  </head>
-  <body>
-    <a-scene mindar-face embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-      <a-camera active="false" position="0 0 0"></a-camera>
-      <a-entity mindar-face-target="anchorIndex: 1">
-	<a-sphere color="green" radius="0.1"></a-sphere>
-      </a-entity>
-    </a-scene>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>MindAR Face Test</title>
+
+  <script src="https://unpkg.com/aframe@1.5.0/dist/aframe.min.js"></script>
+  <script src="https://unpkg.com/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
+</head>
+<body>
+
+  <a-scene
+    mindar-face
+    embedded
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+
+    <a-camera active="false" position="0 0 0"></a-camera>
+
+    <!-- anchor 1 = кончик носа, радиус 0.1 = ~20% ширины лица -->
+    <a-entity mindar-face-target="anchorIndex: 1">
+      <a-sphere color="green" radius="0.1"></a-sphere>
+    </a-entity>
+
+    <!-- Дополнительно: маркер на переносице для проверки -->
+    <a-entity mindar-face-target="anchorIndex: 168">
+      <a-sphere color="red" radius="0.05"></a-sphere>
+    </a-entity>
+
+  </a-scene>
+
+</body>
 </html>
