@@ -1,92 +1,58 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Face Mask</title>
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
-  <style>
-    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
-    #hint {
-      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-      color: #fff; font-family: system-ui, sans-serif; font-size: 14px;
-      background: rgba(0,0,0,.45); padding: 6px 14px; border-radius: 8px;
-      z-index: 10; pointer-events: none;
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Face Mask</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
+  </head>
+  
+<script>
+  AFRAME.registerComponent('smooth-follow', {
+    schema: { lerp: { default: 0.35 } },
+    init: function () {
+      this.parent = this.el.parentNode.object3D; // сюда MindAR пишет позу
+    },
+    tick: function () {
+      if (!this.parent) return;
+      const o = this.el.object3D;
+      const k = this.data.lerp;
+      // сглаженно тянемся к родителю
+      o.position.lerp(this.parent.position, k);
+      o.rotation.x += (this.parent.rotation.x - o.rotation.x) * k;
+      o.rotation.y += (this.parent.rotation.y - o.rotation.y) * k;
+      o.rotation.z += (this.parent.rotation.z - o.rotation.z) * k;
     }
-  </style>
-</head>
-<body>
-  <div id="hint">Наведите камеру на лицо…</div>
+  });
+</script>
+  
+  <body>
+    <a-scene mindar-face="autoStart: true"
+             embedded
+             renderer="colorManagement: true, physicallyCorrectLights"
+             vr-mode-ui="enabled: false"
+             device-orientation-permission-ui="enabled: false">
+      <a-assets>
+        <a-asset-item id="glassesModel" 
+          src="glasses.glb">
+        </a-asset-item>
+      </a-assets>
 
-  <a-scene
-    mindar-face="autoStart: true; maxTrack: 1; uiLoading: no; uiError: no; uiScanning: no;"
-    color-space="sRGB"
-    renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true; alpha: true;"
-    background="transparent: true"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false"
-  >
-    <a-assets>
-      <a-asset-item id="glassesModel" src="glasses.glb"></a-asset-item>
-    </a-assets>
+      <a-camera active="false"></a-camera>
 
-    <a-camera active="false"></a-camera>
-
-    <a-entity light="type: ambient; color: #BBB; intensity: 0.9"></a-entity>
-    <a-entity light="type: directional; color: #FFF; intensity: 0.8" position="1 2 1"></a-entity>
-
-    <a-entity mindar-face-target="anchorIndex: 168">
-      <a-entity id="smoothWrap" position="0 0 0" rotation="0 0 0" scale="1 1 1">
-        <a-gltf-model
-          src="#glassesModel"
-          position="0 0.015 0.04"
-          scale="0.2 0.2 0.2"
-          rotation="-90 0 0">
-        </a-gltf-model>
+      <a-entity mindar-face-target="anchorIndex: 1">
+        <a-entity smooth-follow="lerp: 0.35">
+          <a-gltf-model 
+            rotation="0 0 0" 
+            position="-0.25 -0.2 0.02"
+            scale="0.2 0.2 0.2" 
+            src="#glassesModel">
+          </a-gltf-model>
+        </a-entity>
       </a-entity>
-    </a-entity>
-  </a-scene>
 
-  <script>
-    AFRAME.registerComponent('smooth-follow', {
-      schema: { lerp: { default: 0.35 } },
-      init: function () {
-        this.parent = this.el.parentNode.object3D;
-      },
-      tick: function () {
-        if (!this.parent) return;
-        const k = this.data.lerp;
-        const o = this.el.object3D;
-        const p = this.parent.position;
-        const r = this.parent.rotation;
-        const s = this.parent.scale;
-
-        o.position.x += (p.x - o.position.x) * k;
-        o.position.y += (p.y - o.position.y) * k;
-        o.position.z += (p.z - o.position.z) * k;
-
-        o.rotation.x += (r.x - o.rotation.x) * k;
-        o.rotation.y += (r.y - o.rotation.y) * k;
-        o.rotation.z += (r.z - o.rotation.z) * k;
-
-        o.scale.x += (s.x - o.scale.x) * k;
-        o.scale.y += (s.y - o.scale.y) * k;
-        o.scale.z += (s.z - o.scale.z) * k;
-      }
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('smoothWrap')
-        .setAttribute('smooth-follow', 'lerp: 0.35');
-    });
-
-    const scene = document.querySelector('a-scene');
-    scene.addEventListener('renderstart', () => {
-      const hint = document.getElementById('hint');
-      scene.addEventListener('targetFound', () => { hint.style.display = 'none'; });
-      scene.addEventListener('targetLost',  () => { hint.style.display = 'block'; });
-    });
-  </script>
-</body>
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.8" position="1 2 1"></a-entity>
+      
+    </a-scene>
+  </body>
 </html>
